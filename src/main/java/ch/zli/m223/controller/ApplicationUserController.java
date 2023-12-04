@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -21,54 +22,65 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import ch.zli.m223.model.ApplicationUser;
 import ch.zli.m223.service.ApplicationUserService;
 
-
 @Path("/users")
 @Tag(name = "Users", description = "Handling of users")
 @RolesAllowed({ "User", "Admin" })
 public class ApplicationUserController {
-  
-  @Inject
-  ApplicationUserService userService;
 
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(
-      summary = "Index all users.", 
-      description = "Returns a list of all users."
-  )
-  public List<ApplicationUser> index() {
-      return userService.findAll();
-  }
+    @Inject
+    ApplicationUserService userService;
 
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Operation(
-      summary = "Creates a new user. Also known as registration.", 
-      description = "Creates a new user and returns the newly added user."
-  )
-  @PermitAll
-  public ApplicationUser create(ApplicationUser user) {
-     return userService.createUser(user);
-  }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Index all users.", description = "Returns a list of all users.")
+    public List<ApplicationUser> index() {
+        return userService.findAll();
+    }
 
-  @Path("/{id}")
-  @DELETE
-  @Operation(
-      summary = "Deletes an user.",
-      description = "Deletes an user by its id."
-  )
-  public void delete(@PathParam("id") Long id) {
-      userService.deleteUser(id);
-  }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Creates a new user. Also known as registration.", description = "Creates a new user and returns the newly added user.")
+    @PermitAll
+    public Response create(ApplicationUser user) {
+        if (!isUserValid(user) || userService.findByEmail(user.getEmail()).isPresent()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("incorrect or incomplete registration data")
+                    .build();
+        }
 
-  @Path("/{id}")
-  @PUT
-  @Operation(
-      summary = "Updates an user.",
-      description = "Updates an user by its id."
-  )
-  public ApplicationUser update(@PathParam("id") Long id, ApplicationUser user) {
-      return userService.updateUser(id, user);
-  }
+        userService.createUser(user);
+        
+        return Response.status(Response.Status.CREATED).entity(user).build();
+    }
+
+    @Path("/{id}")
+    @DELETE
+    @Operation(summary = "Deletes an user.", description = "Deletes an user by its id.")
+    public void delete(@PathParam("id") Long id) {
+        userService.deleteUser(id);
+    }
+
+    @Path("/{id}")
+    @PUT
+    @Operation(summary = "Updates an user.", description = "Updates an user by its id.")
+    public ApplicationUser update(@PathParam("id") Long id, ApplicationUser user) {
+        return userService.updateUser(id, user);
+    }
+
+    private boolean isUserValid(ApplicationUser user) {
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            return false;
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            return false;
+        }
+        if (user.getName() == null || user.getName().isEmpty()) {
+            return false;
+        }
+        if (user.getSurname() == null || user.getSurname().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
 }

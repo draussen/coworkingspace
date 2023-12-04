@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 import ch.zli.m223.model.ApplicationUser;
@@ -24,16 +23,15 @@ public class SessionService {
     Optional<ApplicationUser> principal = applicationUserService.findByEmail(credential.getEmail());
 
     try {
-      if (principal.isPresent() && principal.get().getPassword().equals(credential.getPassword())) {
+      if (principal.isPresent() && principal.get().getPassword().equals(applicationUserService.hashPassword(credential.getPassword()))) {
         String token = Jwt
             .issuer("https://zli.example.com/")
             .upn(credential.getEmail())
-            .groups(new HashSet<>(Arrays.asList("User", "Admin")))
-            .expiresIn(Duration.ofHours(12))
+            .groups(new HashSet<>(Arrays.asList(principal.get().getRole().getName())))
+            .expiresIn(Duration.ofHours(24))  
             .sign();
         return Response
             .ok(principal.get())
-            .cookie(new NewCookie("punchclock", token))
             .header("Authorization", "Bearer " + token)
             .build();
       }
