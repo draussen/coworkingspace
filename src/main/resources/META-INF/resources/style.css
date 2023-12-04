@@ -1,0 +1,35 @@
+body {
+  width: 800px;
+  margin: 0 auto;
+}
+
+input:not([type='checkbox']), select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type='submit'], table {
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+}
+
+nav {
+  margin-bottom: 1rem;
+  background-color: #DDDDDD;
+}
+
+nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+}
+
+nav ul li a {
+  padding: 1rem;
+  display: inline-block;
+}
