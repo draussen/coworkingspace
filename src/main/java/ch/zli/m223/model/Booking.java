@@ -9,10 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.transaction.Transactional;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
+@Transactional
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +34,10 @@ public class Booking {
     @Column(nullable = false)
     private String status;
 
-    @ManyToOne
+    @JsonBackReference(value = "user")
+    @ManyToOne()
     @JoinColumn(name = "user_id")
+    @Fetch(FetchMode.JOIN)
     private ApplicationUser user;
 
     public ApplicationUser getUser() {

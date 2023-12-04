@@ -14,6 +14,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @NamedQueries({
@@ -42,7 +46,9 @@ public class ApplicationUser {
   @JoinColumn(name = "role_id")
   private Role role;
 
+  @JsonIgnoreProperties("user")
   @OneToMany(mappedBy = "user")
+  @Fetch(FetchMode.JOIN)
   private List<Booking> bookings;
 
   public Role getRole() {
