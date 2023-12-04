@@ -15,7 +15,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import ch.zli.m223.model.Credential;
 import ch.zli.m223.service.SessionService;
 
-@Path("/session")
+@Path("/users/login")
 @Tag(name = "Session", description = "Handling of sessions")
 @PermitAll
 public class SessionController {

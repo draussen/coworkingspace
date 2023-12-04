@@ -32,6 +32,15 @@ public class Booking {
     @JoinColumn(name = "user_id")
     private ApplicationUser user;
 
+    public ApplicationUser getUser() {
+        return user;
+    }
+    
+    public void setUser(ApplicationUser user) {
+        this.user = user;
+    }
+    
+
     public Long getId() {
         return id;
     }

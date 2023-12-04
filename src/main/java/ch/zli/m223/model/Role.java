@@ -5,6 +5,9 @@ import javax.persistence.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Role.findByName", query = "SELECT r FROM Role r WHERE r.name = :name")
+})
 public class Role {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

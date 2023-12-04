@@ -16,12 +16,17 @@ import ch.zli.m223.model.Role;
 
 @ApplicationScoped
 public class ApplicationUserService {
+
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    private RoleService roleService;
+
     @Transactional
     public ApplicationUser createUser(ApplicationUser user) {
-        user.setRole();
+        Role memberRole = roleService.findByName("Mitglied");
+        user.setRole(memberRole);
         user.setPassword(hashPassword(user.getPassword()));
 
         return entityManager.merge(user);
