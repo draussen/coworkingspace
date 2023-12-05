@@ -79,7 +79,7 @@ public class BookingController {
 
     @Path("/{id}")
     @PUT
-    @Operation(summary = "Updates an entry.", description = "Updates an entry by its id.")
+    @Operation(summary = "Updates a booking.", description = "Updates a booking by its id.")
     public Booking update(@PathParam("id") Long id, @Valid Booking booking) {
         String name = securityContext.getUserPrincipal().getName();
 
