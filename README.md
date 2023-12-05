@@ -34,3 +34,15 @@ Die Testdaten sind unter "/workspace/src/main/resources/testdata.sql" definiert 
 ## Automatische Tests
 
 Die automatischen Tests können mit `./mvnw quarkus:test` ausgeführt werden. Für die automatischen Tests wird nicht die PostgreSQL-Datenbank verwendet, sondern eine H2-Datenbank, welche sich im Arbeitsspeicher während der Ausführung befindet.
+
+Die automatischen Tests werden in dem Verzeichnis gefunden:
+/workspace/src/test/java/ch/zli/m223
+
+### Änderungen zur Schnittstellenplanung
+
+Die Verwaltung der Buchungsanfragen, durch den Admin, laufen nun über /bookings. Es wird geprüft, ob der User im SecurityContext die Gruppe "Admin" hat. So muss man keine neuen extra Controller / Service für den Admin erstellen.
+Zudem ist die Schnittstelle des Passworts ändern anders. Der User kann seine Account Daten nun über users/{id} mit der PUT methode ändern.
+
+### Disclaimer
+
+Das README.md ist eine Vorlage aus dem punchclock Projekt. Zudem wurde der Code mit Hilfe von ChatGPT erstellt.
