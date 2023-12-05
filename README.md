@@ -47,3 +47,4 @@ Zudem ist die Schnittstelle des Passworts ändern anders. Der User kann seine Ac
 
 Das README.md ist eine Vorlage aus dem punchclock Projekt. Zudem wurde der Code mit Hilfe von ChatGPT erstellt.
 Die App hat kein angepasstes UI, weshalb ich empfehle die Endpoints mit hoppscotch oder postman zu testen.
+Gewisse Endpoints crashen, wenn der User nicht die korrekte Rolle hat.
