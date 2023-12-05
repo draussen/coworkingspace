@@ -101,9 +101,9 @@ public class ApplicationUser {
 
   public List<Booking> getBookings() {
     return bookings;
-}
+  }
 
-public void setBookings(List<Booking> bookings) {
+  public void setBookings(List<Booking> bookings) {
     this.bookings = bookings;
-}
+  }
 }

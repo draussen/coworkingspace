@@ -60,8 +60,9 @@ public class BookingService {
     public Booking updateBooking(Long id, Booking booking, String name) {
         Optional<ApplicationUser> user = applicationUserService.findByEmail(name);
 
-        booking.setId(id);
         if (user.get().getRole().getName().equals("Admin")) {
+            booking.setId(id);
+
             return entityManager.merge(booking);
         }
 

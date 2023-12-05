@@ -32,11 +32,11 @@ public class Booking {
     @Column(nullable = false)
     private LocalDate date;
 
-    @NotBlank
+    @NotBlank()
     @Column(nullable = false)
     private String type;
 
-    @NotBlank
+    @NotBlank()
     @Column(nullable = false)
     private String status;
 
