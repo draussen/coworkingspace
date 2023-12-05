@@ -13,8 +13,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -24,11 +26,14 @@ import ch.zli.m223.service.ApplicationUserService;
 
 @Path("/users")
 @Tag(name = "Users", description = "Handling of users")
-@RolesAllowed({ "User", "Admin" })
+@RolesAllowed({ "Mitglied", "Admin" })
 public class ApplicationUserController {
 
     @Inject
     ApplicationUserService userService;
+
+    @Context
+    SecurityContext securityContext;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -49,11 +54,11 @@ public class ApplicationUserController {
         }
 
         userService.createUser(user);
-        
+
         return Response.status(Response.Status.CREATED).entity(user).build();
     }
 
-    @Path("/{id}")
+    @Path("/delete/{id}")
     @DELETE
     @Operation(summary = "Deletes an user.", description = "Deletes an user by its id.")
     public void delete(@PathParam("id") Long id) {

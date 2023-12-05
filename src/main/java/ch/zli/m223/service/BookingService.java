@@ -38,10 +38,8 @@ public class BookingService {
     public Booking findBooking(Long id, String name) {
         Optional<ApplicationUser> user = applicationUserService.findByEmail(name);
 
-        // if entity user == user wie bei deletebooking
-
         var entity = entityManager.find(Booking.class, id);
-        if (entity.getUser().getId().equals(user.get().getId())) {
+        if (entity.getUser().getId().equals(user.get().getId()) || user.get().getRole().getName().equals("Admin")) {
             return entity;
         }
 
@@ -53,9 +51,20 @@ public class BookingService {
         Optional<ApplicationUser> user = applicationUserService.findByEmail(name);
 
         var entity = entityManager.find(Booking.class, id);
-        if (entity.getUser().equals(user.get())) {
+        if (entity.getUser().equals(user.get()) || user.get().getRole().getName().equals("Admin")) {
             entityManager.remove(entity);
         }
-        // else send statuscode 401
+    }
+
+    @Transactional
+    public Booking updateBooking(Long id, Booking booking, String name) {
+        Optional<ApplicationUser> user = applicationUserService.findByEmail(name);
+
+        booking.setId(id);
+        if (user.get().getRole().getName().equals("Admin")) {
+            return entityManager.merge(booking);
+        }
+
+        return null;
     }
 }

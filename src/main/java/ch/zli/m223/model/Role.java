@@ -1,6 +1,7 @@
 package ch.zli.m223.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -14,6 +15,7 @@ public class Role {
   @Schema(readOnly = true)
   private Long id;
 
+  @NotBlank
   @Column(nullable = false)
   private String name;
 
