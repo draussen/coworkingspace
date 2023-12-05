@@ -33,20 +33,44 @@ public class ApplicationUserService {
     }
 
     @Transactional
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id, String name) {
+        Optional<ApplicationUser> userSecurityEntity = findByEmail(name);
+
         var entity = entityManager.find(ApplicationUser.class, id);
-        entityManager.remove(entity);
+
+        if (entity.getEmail().equals(userSecurityEntity.get().getEmail())
+                || userSecurityEntity.get().getRole().getName().equals("Admin")) {
+
+            entityManager.remove(entity);
+        }
     }
 
     @Transactional
-    public ApplicationUser updateUser(Long id, ApplicationUser user) {
-        user.setId(id);
-        return entityManager.merge(user);
+    public ApplicationUser updateUser(Long id, ApplicationUser user, String name) {
+        Optional<ApplicationUser> userSecurityEntity = findByEmail(name);
+
+        var entity = entityManager.find(ApplicationUser.class, id);
+
+        if (entity.getEmail().equals(userSecurityEntity.get().getEmail())
+                || userSecurityEntity.get().getRole().getName().equals("Admin")) {
+
+            user.setId(id);
+            return entityManager.merge(user);
+
+        }
+
+        return null;
     }
 
-    public List<ApplicationUser> findAll() {
-        var query = entityManager.createQuery("FROM ApplicationUser", ApplicationUser.class);
-        return query.getResultList();
+    public List<ApplicationUser> findAll(String name) {
+        Optional<ApplicationUser> userSecurityEntity = findByEmail(name);
+        if (userSecurityEntity.get().getRole().getName().equals("Admin")) {
+            var query = entityManager.createQuery("FROM ApplicationUser", ApplicationUser.class);
+
+            return query.getResultList();
+        }
+
+        return null;
     }
 
     public Optional<ApplicationUser> findByEmail(String email) {
@@ -66,5 +90,14 @@ public class ApplicationUserService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Fehler beim Hashing des Passworts", e);
         }
+    }
+
+    public Optional<ApplicationUser> findById(Long id, String name) {
+                Optional<ApplicationUser> userSecurityEntity = findByEmail(name);
+        if (userSecurityEntity.get().getRole().getName().equals("Admin")) {
+        return Optional.ofNullable(entityManager.find(ApplicationUser.class, id));
+        }
+        
+        return null;
     }
 }

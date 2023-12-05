@@ -1,6 +1,7 @@
 package ch.zli.m223.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -39,7 +40,9 @@ public class ApplicationUserController {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Index all users.", description = "Returns a list of all users.")
     public List<ApplicationUser> index() {
-        return userService.findAll();
+        String name = securityContext.getUserPrincipal().getName();
+
+        return userService.findAll(name);
     }
 
     @POST
@@ -58,18 +61,22 @@ public class ApplicationUserController {
         return Response.status(Response.Status.CREATED).entity(user).build();
     }
 
-    @Path("/delete/{id}")
+    @Path("/{id}")
     @DELETE
     @Operation(summary = "Deletes an user.", description = "Deletes an user by its id.")
     public void delete(@PathParam("id") Long id) {
-        userService.deleteUser(id);
+        String name = securityContext.getUserPrincipal().getName();
+
+        userService.deleteUser(id, name);
     }
 
     @Path("/{id}")
     @PUT
     @Operation(summary = "Updates an user.", description = "Updates an user by its id.")
     public ApplicationUser update(@PathParam("id") Long id, ApplicationUser user) {
-        return userService.updateUser(id, user);
+        String name = securityContext.getUserPrincipal().getName();
+
+        return userService.updateUser(id, user, name);
     }
 
     private boolean isUserValid(ApplicationUser user) {
@@ -86,6 +93,23 @@ public class ApplicationUserController {
             return false;
         }
         return true;
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Find a user by ID", description = "Returns the details of a user with the specified ID.")
+    public Response findUserById(@PathParam("id") Long id) {
+
+        String name = securityContext.getUserPrincipal().getName();
+
+        Optional<ApplicationUser> user = userService.findById(id, name);
+
+        if (user.isPresent()) {
+            return Response.ok(user.get()).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+        }
     }
 
 }
