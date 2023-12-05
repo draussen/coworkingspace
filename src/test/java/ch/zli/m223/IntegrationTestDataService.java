@@ -1,8 +1,5 @@
 package ch.zli.m223;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -10,8 +7,6 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import ch.zli.m223.model.ApplicationUser;
-import ch.zli.m223.model.Booking;
-import ch.zli.m223.model.Credential;
 import ch.zli.m223.model.Role;
 import io.quarkus.arc.profile.IfBuildProfile;
 import io.quarkus.runtime.StartupEvent;
