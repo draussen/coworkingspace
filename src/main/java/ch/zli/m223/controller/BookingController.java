@@ -2,7 +2,9 @@ package ch.zli.m223.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,13 +20,13 @@ import javax.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import ch.zli.m223.model.ApplicationUser;
 import ch.zli.m223.model.Booking;
 import ch.zli.m223.service.ApplicationUserService;
 import ch.zli.m223.service.BookingService;
 
 @Path("/bookings")
 @Tag(name = "Bookings", description = "Handling of bookings")
+@RolesAllowed({ "Mitglied", "Admin" })
 public class BookingController {
 
     @Inject
@@ -41,7 +43,7 @@ public class BookingController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Request a new booking.", description = "Requests a new booking and returns the request status.")
-    public Response requestBooking(Booking booking) {
+    public Response requestBooking(@Valid Booking booking) {
         // user einfügen
         String name = securityContext.getUserPrincipal().getName();
 
@@ -69,7 +71,7 @@ public class BookingController {
     @Path("/status/{id}")
     @GET
     @Operation(summary = "Gets a booking.", description = "Gets a booking by its id.")
-    public String findBooking(@PathParam("id") Long id) {
+    public Booking findBooking(@PathParam("id") Long id) {
         String name = securityContext.getUserPrincipal().getName();
         return bookingService.findBooking(id, name);
     }

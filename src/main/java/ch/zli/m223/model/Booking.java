@@ -10,12 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotBlank;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import io.smallrye.common.constraint.NotNull;
 
 @Entity
 @Transactional
@@ -25,12 +28,15 @@ public class Booking {
     @Schema(readOnly = true)
     private Long id;
 
+    @NotNull
     @Column(nullable = false)
     private LocalDate date;
 
+    @NotBlank
     @Column(nullable = false)
     private String type;
 
+    @NotBlank
     @Column(nullable = false)
     private String status;
 

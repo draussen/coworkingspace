@@ -35,13 +35,17 @@ public class BookingService {
         return user.get().getBookings();
     }
 
-    public String findBooking(Long id, String name) {
+    public Booking findBooking(Long id, String name) {
         Optional<ApplicationUser> user = applicationUserService.findByEmail(name);
 
         // if entity user == user wie bei deletebooking
-        var entity = entityManager.find(Booking.class, id);
 
-        return entity.getStatus();
+        var entity = entityManager.find(Booking.class, id);
+        if (entity.getUser().getId().equals(user.get().getId())) {
+            return entity;
+        }
+
+        return null;
     }
 
     @Transactional
